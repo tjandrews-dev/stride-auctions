@@ -1,0 +1,50 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  listings  Listing[]
+  bids      Bid[]
+}
+
+model Listing {
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  saleType     String   @default("CLASSIFIED") // AUCTION or CLASSIFIED
+  category     String
+  breed        String?
+  discipline   String?
+  state        String?
+  priceCents   Int?
+  reserveCents Int?
+  endsAt       DateTime?
+  featured     Boolean  @default(false)
+  highlight    Boolean  @default(false)
+  images       String   @default("[]")         // store JSON array as TEXT
+  views        Int      @default(0)
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  bids         Bid[]
+  createdAt    DateTime @default(now())
+}
+
+model Bid {
+  id          String   @id @default(cuid())
+  amountCents Int
+  listingId   String
+  userId      String
+  listing     Listing  @relation(fields: [listingId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+}

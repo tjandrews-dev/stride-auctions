@@ -2,17 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-type Props = {
-  endTime: string; // e.g. "2025-09-15T15:00:00Z"
-};
-
-export default function Countdown({ endTime }: Props) {
+export default function Countdown({ endTime }: { endTime: string }) {
   const [timeLeft, setTimeLeft] = useState("");
 
   useEffect(() => {
     const interval = setInterval(() => {
       const end = new Date(endTime).getTime();
-      const now = new Date().getTime();
+      const now = Date.now();
       const diff = end - now;
 
       if (diff <= 0) {

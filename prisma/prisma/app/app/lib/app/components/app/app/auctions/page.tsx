@@ -1,21 +1,20 @@
-import { prisma } from "./lib/prisma";
-import ListingCard from "./components/ListingCard";
+import { prisma } from "../lib/prisma";
+import ListingCard from "../components/ListingCard";
 
-export default async function Home() {
-  const featured = await prisma.listing.findMany({
-    where: { featured: true, saleType: "AUCTION", category: "HORSE" },
-    orderBy: { createdAt: "desc" },
-    take: 3,
+export default async function AuctionsPage() {
+  const auctions = await prisma.listing.findMany({
+    where: { saleType: "AUCTION", category: "HORSE" },
+    orderBy: { endTime: "asc" },
   });
 
   return (
     <div style={{ display: "grid", gap: 20 }}>
-      <h2 style={{ margin: "6px 0", color: "#0B1D39" }}>Featured Horses</h2>
+      <h2 style={{ margin: "6px 0", color: "#0B1D39" }}>Current Auctions</h2>
       <div
         className="grid"
         style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}
       >
-        {featured.map((l) => (
+        {auctions.map((l) => (
           <ListingCard
             key={l.id}
             id={l.id}
